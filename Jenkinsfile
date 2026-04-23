@@ -2,7 +2,7 @@
 node {
     def imageName = 'wahaj-app'
     def containerName = 'wahaj-app'
-    def appPort = '3000'
+    def appPort = '3001'
 
     stage('Clean Workspace') {
         echo 'Cleaning Jenkins workspace'
