@@ -12,8 +12,8 @@ node {
     stage('Clone Repo') {
         echo 'Cloning the repo'
         git(
-            branch: 'master',
-            url: 'https://github.com/ESE-Wahaj/wahaj'
+            branch: 'main',
+            url: 'https://github.com/ESE-Wahaj/wahajdockerjenkins'
         )
     }
 
