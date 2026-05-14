@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wahaj-app
+  namespace: wahaj-app
+  labels:
+    app: wahaj-app
+    student: fa22-bse-100
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wahaj-app
+  template:
+    metadata:
+      labels:
+        app: wahaj-app
+    spec:
+      containers:
+        - name: wahaj-app
+          image: wahaj-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: "0.0.0.0"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
