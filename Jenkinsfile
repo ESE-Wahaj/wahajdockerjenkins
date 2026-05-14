@@ -21,9 +21,10 @@ node {
 
     stage('SonarQube Analysis') {
         echo 'Running SonarQube static code analysis'
+        def scannerHome = tool 'SonarQube'
         withSonarQubeEnv('SonarQube') {
             sh """
-                sonar-scanner \
+                ${scannerHome}/bin/sonar-scanner \
                   -Dsonar.projectKey=${sonarProject} \
                   -Dsonar.projectName='Wahaj Next.js App - FA22-BSE-100' \
                   -Dsonar.sources=app \
