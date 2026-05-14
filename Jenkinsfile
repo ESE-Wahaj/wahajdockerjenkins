@@ -1,9 +1,10 @@
 
 node {
-    def imageName = 'wahaj-app'
+    def imageName    = 'wahaj-app'
     def containerName = 'wahaj-app'
-    def appPort = '3001'
+    def appPort      = '3001'
     def k8sNamespace = 'wahaj-app'
+    def sonarProject = 'wahaj-nextjs-app'
 
     stage('Clean Workspace') {
         echo 'Cleaning Jenkins workspace'
@@ -16,6 +17,31 @@ node {
             branch: 'main',
             url: 'https://github.com/ESE-Wahaj/wahajdockerjenkins'
         )
+    }
+
+    stage('SonarQube Analysis') {
+        echo 'Running SonarQube static code analysis'
+        withSonarQubeEnv('SonarQube') {
+            sh """
+                sonar-scanner \
+                  -Dsonar.projectKey=${sonarProject} \
+                  -Dsonar.projectName='Wahaj Next.js App - FA22-BSE-100' \
+                  -Dsonar.sources=app \
+                  -Dsonar.exclusions='**/node_modules/**,**/.next/**,**/public/**' \
+                  -Dsonar.host.url=\${SONAR_HOST_URL} \
+                  -Dsonar.login=\${SONAR_AUTH_TOKEN}
+            """
+        }
+    }
+
+    stage('Quality Gate') {
+        echo 'Waiting for SonarQube Quality Gate result'
+        timeout(time: 5, unit: 'MINUTES') {
+            def qg = waitForQualityGate()
+            if (qg.status != 'OK') {
+                error "BLOCKED: SonarQube Quality Gate failed with status: ${qg.status}. Fix security issues before deploying."
+            }
+        }
     }
 
     stage('Build Image') {
