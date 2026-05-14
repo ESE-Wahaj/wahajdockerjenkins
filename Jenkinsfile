@@ -30,7 +30,7 @@ node {
                   -Dsonar.sources=app \
                   -Dsonar.exclusions='**/node_modules/**,**/.next/**,**/public/**' \
                   -Dsonar.host.url=\${SONAR_HOST_URL} \
-                  -Dsonar.login=\${SONAR_AUTH_TOKEN}
+                  -Dsonar.token=\${SONAR_AUTH_TOKEN}
             """
         }
     }
